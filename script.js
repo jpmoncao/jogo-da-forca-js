@@ -82,12 +82,15 @@ const temas = [
     }
 ];
 
+// Pega um número aleatório de 0 a 4 e seleciona um tema
 const indexTema = Math.trunc((Math.random() * 10) / 2);
 const TEMA_ESCOLHIDA = temas[indexTema].tema;
 
+// Pega um número aleatório de 0 a 9 e seleciona uma palavra
 const indexPalavra = Math.trunc((Math.random() * 10));
 const PALAVRA_ESCOLHIDA = temas[indexTema].palavras[indexPalavra];
 
+// Adicionar tema na tela
 const p = document.createElement('p');
 p.innerHTML = TEMA_ESCOLHIDA;
 cardResultado.appendChild(p);
@@ -125,7 +128,7 @@ const mostrarPerdeuJogo = () => {
     cardResultado.innerHTML = '';
 
     const h3 = document.createElement('h3');
-    h3.innerHTML = 'ENFORCADO!';
+    h3.innerHTML = 'A PALAVRA ERA: ' + PALAVRA_ESCOLHIDA + '!';
     cardResultado.appendChild(h3);
 
     const p = document.createElement('p');
@@ -246,25 +249,33 @@ const tentarLetra = () => {
         if (isFinite(parseInt(letra)))
             throw new Error('Digite uma letra válida!');
 
+        if (!/^[A-Z]+$/.test(letra))
+            throw new Error('Digite uma letra válida!');
+
         if (letrasTentadas.indexOf(letra) > -1)
             throw new Error('Essa letra já foi tentada!');
 
+        // Adiciona nas letras tentadas
         letrasTentadas.push(letra);
 
+        // Se a letra estiver na palavra escolhida
         if (PALAVRA_ESCOLHIDA.indexOf(letra) > -1)
             letrasCorretas.push(letra);
         else
             letrasErradas.push(letra);
 
+        // Redesenha a forca
         desenharForca(letrasCorretas, letrasErradas);
 
+        // Se todas letras corretas estiverem na palavra certa, mostra vitória
         if (PALAVRA_ESCOLHIDA.split('').every(item => letrasCorretas.includes(item)))
             mostrarGanhouJogo();
 
+        // Se errar sete vezes, mostra derrota
         if (letrasErradas.length >= 7)
             mostrarPerdeuJogo();
 
-        console.log({ PALAVRA_ESCOLHIDA, letra, letrasTentadas, letrasCorretas, letrasErradas });
+        console.log({ letra, letrasTentadas, letrasCorretas, letrasErradas });
     } catch (error) {
         mostrarMensagemErro(error.message)
         console.error(error);
